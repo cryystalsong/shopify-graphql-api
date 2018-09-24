@@ -1,0 +1,123 @@
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+type Query {
+
+    # gets Shop by ID
+    Shop(id: ID): Shop
+
+    # gets Order by ID
+    Order(id: ID): Order
+
+    # gets Product by ID
+    Product(id: ID): Product
+
+    # gets LineItem by ID
+    LineItem(id: ID): LineItem
+
+    # gets the list of shops in database
+    shops: [Shop]
+
+    # gets the list of products in database
+    products: [Product]
+
+    # gets the list of orders in database
+    orders: [Order]
+
+    # gets the list of line items in database
+    lineItems: [LineItem]
+}
+
+type Mutation {
+
+    # add a new shop by providing shop name
+    addShop(name: String!): Shop
+
+    # add a order to a shop, by providing shopID
+    # order total is 0 by default
+    addOrder(shopID: ID!): Order
+
+    # add a product, specify product name, price, and which shop it belongs to
+    addProduct(
+        name: String!, #more test
+        price: Int!,
+        shopID: ID!): Product
+
+    # add a line item to a order by orderID, specify associated product by productID
+    addLineItem(productID: ID!, orderID: ID!): LineItem
+
+    # delete shop by ID, and its associated orders and products
+    deleteShop(id: ID!): Shop
+
+    # delete order by ID, and its associated line items
+    deleteOrder(id: ID!): Order
+
+    # delete product by ID, and all its associated line items
+    deleteProduct(id: ID!): Product
+
+    # delete line item by ID, and updates total of order related to line item
+    deleteLineItem(id: ID!): LineItem
+
+    # update the name of shop, provided by shop id
+    updateShopName(id: ID!, name: String!): Shop
+
+    # update product by product id, can be name, price, or shop it belongs to
+    updateProduct(id: ID!, name: String, price: Int, shopID: ID): Product
+
+    # update the name of line item, provided by shop id
+    updateLineItemName(id: ID!, name: String!): LineItem
+}
+
+# A line item is a service or product added to an order
+type LineItem {
+    # line item's ID
+    id: ID
+    # name of the line item, mapped to associated product's name
+    name: String
+    # price of line item, mapped to associated product's price
+    price: Int
+    # the order the line item is associated with
+    order: Order
+    # the product the line item is associated with
+    product: Product
+}
+
+# A order of a shop contains a list of line items
+type Order {
+    # order's ID
+    id: ID
+    # total price of the order, sum of all its line items
+    total: Int
+    # the list of line items on the order
+    lineItems: [LineItem]
+    # the shop the order is associated with
+    shop: Shop
+}
+
+# A product and its associated details
+type Product {
+    # product's ID
+    id: ID
+    # name of the product
+    name: String
+    # the shop the product belongs to
+    shopID: ID
+    # the price of the product
+    price: Int
+    # the list of line items in current orders that are associated with the product
+    lineItems: [LineItem]
+}
+
+# A shop
+type Shop {
+    # the shop's ID
+    id: ID
+    # the name of the shop
+    name: String
+    # the shop's list of orders
+    orders: [Order]
+    # the shop's list of product offerings
+    products: [Product]
+}
